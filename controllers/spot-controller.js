@@ -1,5 +1,5 @@
 const { StatusCodes } = require("http-status-codes");
-const { Spots, UserSpots } = require("../config");
+const { Spots, UserSpots, Countries } = require("../config");
 
 const add = async (req, res) => {
   try {
@@ -28,13 +28,22 @@ const add = async (req, res) => {
     };
 
     const newSpot = await Spots.create(inputSpot);
+    const country = await Countries.findOne({ countryName });
+
+    if (country) {
+      await Countries.updateOne(
+        { countryName },
+        { $push: { spotList: newSpot._id } }
+      );
+    } else {
+      await Countries.create({ countryName, spotList: [newSpot._id] });
+    }
 
     res.status(StatusCodes.CREATED).json({
       success: true,
       message: "Spot added successfully",
       data: newSpot,
     });
-
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
@@ -62,7 +71,6 @@ const addByUser = async (req, res) => {
       username,
     } = req.body;
 
-    const user = await UserSpots.findOne({ uuid });
     const inputSpot = {
       image,
       touristSpotName,
@@ -75,6 +83,7 @@ const addByUser = async (req, res) => {
       totalVisitorsPerYear,
     };
 
+    const user = await UserSpots.findOne({ uuid });
     if (!user) {
       return res.status(StatusCodes.NOT_FOUND).json({
         success: false,
@@ -82,8 +91,17 @@ const addByUser = async (req, res) => {
       });
     } else {
       const newSpot = await Spots.create(inputSpot);
-      const user = await UserSpots.findOne({ uuid });
+      const country = await Countries.findOne({ countryName });
 
+      if (country) {
+        await Countries.updateOne(
+          { countryName },
+          { $push: { spotList: newSpot._id } }
+        );
+      } else {
+        await Countries.create({ countryName, spotList: [newSpot._id] });
+      }
+      
       const updated = await UserSpots.updateOne(
         { uuid },
         { $push: { spotList: newSpot._id } }
@@ -96,7 +114,6 @@ const addByUser = async (req, res) => {
         updated,
       });
     }
-
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
@@ -115,7 +132,6 @@ const get = async (req, res) => {
       message: "Spots retrieved successfully",
       data: spots,
     });
-
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
@@ -142,7 +158,6 @@ const getSingleSpot = async (req, res) => {
       message: "Spot retrieved successfully",
       data: spot,
     });
-
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
@@ -171,7 +186,6 @@ const getSpotByUser = async (req, res) => {
       message: "Spots retrieved successfully",
       data: spots,
     });
-
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
@@ -236,7 +250,6 @@ const updateSpot = async (req, res) => {
       message: "Spot updated successfully",
       data: updated,
     });
-
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
@@ -278,7 +291,6 @@ const deleteSpot = async (req, res) => {
       success: true,
       message: "Spot deleted successfully",
     });
-
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,

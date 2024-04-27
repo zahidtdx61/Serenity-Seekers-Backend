@@ -35,6 +35,12 @@ const CountriesSchema = new mongoose.Schema({
   countryName: String,
   countryDescription: String,
   countryImage: String,
+  spotList: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "AllSpots",
+    },
+  ],
 });
 
 const AllSpots = mongoose.model("AllSpots", SpotsSchema);
