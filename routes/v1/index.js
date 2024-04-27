@@ -26,4 +26,6 @@ router.get("/get-spot/user/:uuid", SpotController.getSpotByUser);
 
 router.put("/update-spot/:spotId", SpotController.updateSpot);
 
+router.delete("/delete-spot/:spotId", SpotController.deleteSpot);
+
 module.exports = router;

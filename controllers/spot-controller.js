@@ -34,6 +34,7 @@ const add = async (req, res) => {
       message: "Spot added successfully",
       data: newSpot,
     });
+
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
@@ -95,6 +96,7 @@ const addByUser = async (req, res) => {
         updated,
       });
     }
+
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
@@ -113,6 +115,7 @@ const get = async (req, res) => {
       message: "Spots retrieved successfully",
       data: spots,
     });
+
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
@@ -139,6 +142,7 @@ const getSingleSpot = async (req, res) => {
       message: "Spot retrieved successfully",
       data: spot,
     });
+
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
@@ -167,6 +171,7 @@ const getSpotByUser = async (req, res) => {
       message: "Spots retrieved successfully",
       data: spots,
     });
+
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
@@ -212,13 +217,13 @@ const updateSpot = async (req, res) => {
       });
     }
 
-    const user = await UserSpots.findOne({ uuid});
-    if(!user) {
+    const user = await UserSpots.findOne({ uuid });
+    if (!user) {
       return res.status(StatusCodes.NOT_FOUND).json({
         success: false,
         message: "User not found",
       });
-    }else if (!user.spotList.includes(spotId)) {
+    } else if (!user.spotList.includes(spotId)) {
       return res.status(StatusCodes.NOT_FOUND).json({
         success: false,
         message: "Spot not found in user's spot list",
@@ -231,6 +236,49 @@ const updateSpot = async (req, res) => {
       message: "Spot updated successfully",
       data: updated,
     });
+
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+const deleteSpot = async (req, res) => {
+  try {
+    const spotId = req.params.spotId;
+    const { uuid } = req.body;
+
+    const spot = await Spots.findById(spotId);
+    if (!spot) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: "Spot not found",
+      });
+    }
+
+    const user = await UserSpots.findOne({ uuid });
+    if (!user) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: "User not found",
+      });
+    } else if (!user.spotList.includes(spotId)) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: "Spot not found in user's spot list",
+      });
+    }
+
+    await Spots.deleteOne({ _id: spotId });
+    await UserSpots.updateOne({ uuid }, { $pull: { spotList: spotId } });
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Spot deleted successfully",
+    });
+
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
@@ -247,4 +295,5 @@ module.exports = {
   getSingleSpot,
   getSpotByUser,
   updateSpot,
+  deleteSpot,
 };
