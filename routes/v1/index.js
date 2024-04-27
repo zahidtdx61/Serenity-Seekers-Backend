@@ -30,5 +30,6 @@ router.put("/update-spot/:spotId", SpotController.updateSpot);
 router.delete("/delete-spot/:spotId", SpotController.deleteSpot);
 
 router.get("/countries", CountryController.getCountries);
+router.get("/countries/:countryName", CountryController.getSpot);
 
 module.exports = router;
