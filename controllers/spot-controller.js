@@ -265,6 +265,7 @@ const deleteSpot = async (req, res) => {
     const { uuid } = req.body;
 
     const spot = await Spots.findById(spotId);
+    const { countryName } = spot;
     if (!spot) {
       return res.status(StatusCodes.NOT_FOUND).json({
         success: false,
@@ -287,6 +288,8 @@ const deleteSpot = async (req, res) => {
 
     await Spots.deleteOne({ _id: spotId });
     await UserSpots.updateOne({ uuid }, { $pull: { spotList: spotId } });
+    await Countries.updateOne({ countryName }, { $pull: { spotList: spotId } });
+
     return res.status(StatusCodes.OK).json({
       success: true,
       message: "Spot deleted successfully",
