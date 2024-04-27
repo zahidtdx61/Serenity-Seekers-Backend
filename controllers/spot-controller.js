@@ -146,6 +146,34 @@ const getSingleSpot = async (req, res) => {
       error: error.message,
     });
   }
+};
+
+const getSpotByUser = async (req, res) => {
+  try {
+    const uuid = req.params.uuid;
+    const user = await UserSpots.findOne({ uuid });
+
+    if (!user) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const spots = await Spots.find({ _id: { $in: user.spotList } });
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Spots retrieved successfully",
+      data: spots,
+    });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
 
 }
 
@@ -153,4 +181,6 @@ module.exports = {
   add,
   addByUser,
   get,
+  getSingleSpot,
+  getSpotByUser,
 };
