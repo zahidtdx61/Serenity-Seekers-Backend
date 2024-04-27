@@ -4,6 +4,7 @@ const {
   InfoController,
   SpotController,
   UserController,
+  CountryController,
 } = require("./../../controllers");
 
 const dummy = (req, res) => {
@@ -27,5 +28,7 @@ router.get("/get-spot/user/:uuid", SpotController.getSpotByUser);
 router.put("/update-spot/:spotId", SpotController.updateSpot);
 
 router.delete("/delete-spot/:spotId", SpotController.deleteSpot);
+
+router.get("/countries", CountryController.getCountries);
 
 module.exports = router;
