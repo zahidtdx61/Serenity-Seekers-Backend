@@ -21,8 +21,8 @@ const SpotsSchema = new mongoose.Schema({
 
 const UserSpotListSchema = new mongoose.Schema({
   uuid: String,
-  userEmail: String,
-  userName: String,
+  email: String,
+  username: String,
   spotList: [
     {
       type: mongoose.Schema.Types.ObjectId,
