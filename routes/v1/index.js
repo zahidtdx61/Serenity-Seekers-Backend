@@ -24,4 +24,6 @@ router.get("/get-spot", SpotController.get);
 router.get("/get-spot/:spotId", SpotController.getSingleSpot);
 router.get("/get-spot/user/:uuid", SpotController.getSpotByUser);
 
+router.put("/update-spot/:spotId", SpotController.updateSpot);
+
 module.exports = router;

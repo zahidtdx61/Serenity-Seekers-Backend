@@ -174,8 +174,71 @@ const getSpotByUser = async (req, res) => {
       error: error.message,
     });
   }
+};
 
-}
+const updateSpot = async (req, res) => {
+  try {
+    const spotId = req.params.spotId;
+    const {
+      uuid,
+      image,
+      touristSpotName,
+      countryName,
+      location,
+      shortDescription,
+      averageCost,
+      seasonality,
+      travelTime,
+      totalVisitorsPerYear,
+    } = req.body;
+
+    const inputSpot = {
+      image,
+      touristSpotName,
+      countryName,
+      location,
+      shortDescription,
+      averageCost,
+      seasonality,
+      travelTime,
+      totalVisitorsPerYear,
+    };
+
+    const spot = await Spots.findById(spotId);
+    if (!spot) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: "Spot not found",
+      });
+    }
+
+    const user = await UserSpots.findOne({ uuid});
+    if(!user) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: "User not found",
+      });
+    }else if (!user.spotList.includes(spotId)) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: "Spot not found in user's spot list",
+      });
+    }
+
+    const updated = await Spots.updateOne({ _id: spotId }, inputSpot);
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Spot updated successfully",
+      data: updated,
+    });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
 
 module.exports = {
   add,
@@ -183,4 +246,5 @@ module.exports = {
   get,
   getSingleSpot,
   getSpotByUser,
+  updateSpot,
 };
