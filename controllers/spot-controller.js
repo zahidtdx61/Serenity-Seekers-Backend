@@ -39,13 +39,13 @@ const add = async (req, res) => {
       await Countries.create({ countryName, spotList: [newSpot._id] });
     }
 
-    res.status(StatusCodes.CREATED).json({
+    return res.status(StatusCodes.CREATED).json({
       success: true,
       message: "Spot added successfully",
       data: newSpot,
     });
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: "Internal server error",
       error: error.message,
@@ -107,7 +107,7 @@ const addByUser = async (req, res) => {
         { $push: { spotList: newSpot._id } }
       );
 
-      res.status(StatusCodes.CREATED).json({
+      return res.status(StatusCodes.CREATED).json({
         success: true,
         message: "Spot added successfully",
         data: newSpot,
@@ -115,7 +115,7 @@ const addByUser = async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: "Internal server error",
       error: error.message,
@@ -125,15 +125,15 @@ const addByUser = async (req, res) => {
 
 const get = async (req, res) => {
   try {
-    const spots = await Spots.find();
+    const spots = await Spots.find({});
 
-    res.status(StatusCodes.OK).json({
+    return res.status(StatusCodes.OK).json({
       success: true,
       message: "Spots retrieved successfully",
       data: spots,
     });
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: "Internal server error",
       error: error.message,
@@ -153,13 +153,13 @@ const getSingleSpot = async (req, res) => {
       });
     }
 
-    res.status(StatusCodes.OK).json({
+    return res.status(StatusCodes.OK).json({
       success: true,
       message: "Spot retrieved successfully",
       data: spot,
     });
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: "Internal server error",
       error: error.message,
@@ -181,13 +181,13 @@ const getSpotByUser = async (req, res) => {
 
     const spots = await Spots.find({ _id: { $in: user.spotList } });
 
-    res.status(StatusCodes.OK).json({
+    return res.status(StatusCodes.OK).json({
       success: true,
       message: "Spots retrieved successfully",
       data: spots,
     });
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: "Internal server error",
       error: error.message,
@@ -245,13 +245,13 @@ const updateSpot = async (req, res) => {
     }
 
     const updated = await Spots.updateOne({ _id: spotId }, inputSpot);
-    res.status(StatusCodes.OK).json({
+    return res.status(StatusCodes.OK).json({
       success: true,
       message: "Spot updated successfully",
       data: updated,
     });
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: "Internal server error",
       error: error.message,
@@ -287,12 +287,12 @@ const deleteSpot = async (req, res) => {
 
     await Spots.deleteOne({ _id: spotId });
     await UserSpots.updateOne({ uuid }, { $pull: { spotList: spotId } });
-    res.status(StatusCodes.OK).json({
+    return res.status(StatusCodes.OK).json({
       success: true,
       message: "Spot deleted successfully",
     });
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: "Internal server error",
       error: error.message,

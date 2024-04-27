@@ -25,10 +25,7 @@ const getCountries = async (req, res) => {
       const { countryName } = country;
       const spots = await Spots.find({ countryName });
       data[countryName] = spots;
-      console.log(countryName, data);
     };
-
-    console.log('res', data);
 
     return res.status(StatusCodes.OK).json({
       success: true,
