@@ -1,10 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const InfoController = (req, res) => {
-  res.send("Hello from server api");
-};
-
-router.get("/info", InfoController);
+const { InfoController } = require("./../../controllers");
+router.get("/info", InfoController.info);
 
 module.exports = router;
