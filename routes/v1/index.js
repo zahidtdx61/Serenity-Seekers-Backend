@@ -7,13 +7,6 @@ const {
   CountryController,
 } = require("./../../controllers");
 
-const dummy = (req, res) => {
-  res.json({
-    success: true,
-    message: "API is working fine",
-  });
-};
-
 router.get("/info", InfoController.info);
 
 router.post("/add-spot", SpotController.add);
