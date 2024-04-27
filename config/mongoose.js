@@ -5,7 +5,7 @@ dotenv.config();
 
 const URL = `${process.env.MONGO_URL}/${process.env.MONGO_DB_NAME}`;
 
-await mongoose.connect(URL);
+mongoose.connect(URL);
 
 const SpotsSchema = new mongoose.Schema({
   image: String,
