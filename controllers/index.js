@@ -1,5 +1,5 @@
 module.exports = {
   InfoController: require("./info-controller"),
-  AddSpotController: require("./addSpot-controller"),
-  AddUserController: require("./addUser-controller"),
+  SpotController: require("./spot-controller"),
+  UserController: require("./user-controller"),
 };

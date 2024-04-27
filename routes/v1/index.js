@@ -11,9 +11,12 @@ const dummy = (req, res) => {
 };
 
 router.get("/info", InfoController.info);
-router.post("/add-spot", AddSpotController.add);
-router.post("/add-spot/:uuid", AddSpotController.addByUser);
-router.post("/add-user", AddUserController.add);
-router.get("/get-spot")
+
+router.post("/add-spot", SpotController.add);
+router.post("/add-spot/:uuid", SpotController.addByUser);
+
+router.post("/add-user", UserController.add);
+
+router.get("/get-spot", )
 
 module.exports = router;
