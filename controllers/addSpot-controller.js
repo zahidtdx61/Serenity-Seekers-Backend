@@ -43,24 +43,66 @@ const add = async (req, res) => {
   }
 };
 
-
 const addByUser = async (req, res) => {
-  const uuid = req.params.uuid;
-  const { spotId, email, username } = req.body;
-  const userExist = await UserSpots.findOne({ uuid });
-  if (getOne) {
-    res.json({
-      success: true,
-      getOne,
-      uuid,
-      message: "Spot already added",
-    });
-  } else {
-    res.json({
+  try {
+    console.log(req.params);
+    const uuid = req.params.uuid;
+    const {
+      image,
+      touristSpotName,
+      countryName,
+      location,
+      shortDescription,
+      averageCost,
+      seasonality,
+      travelTime,
+      totalVisitorsPerYear,
+      spotId,
+      email,
+      username,
+    } = req.body;
+
+    const user = await UserSpots.findOne({ uuid });
+    const inputSpot = {
+      image,
+      touristSpotName,
+      countryName,
+      location,
+      shortDescription,
+      averageCost,
+      seasonality,
+      travelTime,
+      totalVisitorsPerYear,
+    };
+
+    console.log(user);
+
+    if (!user) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: "User not found",
+      });
+    } else {
+      const newSpot = await Spots.create(inputSpot);
+      const user = await UserSpots.findOne({ uuid });
+
+      const updated = await UserSpots.updateOne(
+        { uuid },
+        { $push: { spotList: newSpot._id } }
+      );
+
+      res.status(StatusCodes.CREATED).json({
+        success: true,
+        message: "Spot added successfully",
+        data: newSpot,
+        updated,
+      });
+    }
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
-      getOne,
-      uuid,
-      message: "Spot not added",
+      message: "Internal server error",
+      error: error.message,
     });
   }
 };

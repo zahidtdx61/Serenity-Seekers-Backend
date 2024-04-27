@@ -6,7 +6,7 @@ const add = async (req, res) => {
     const { uuid, email, username } = req.body;
     const userExist = await UserSpots.findOne({ uuid });
     if (userExist) {
-      res.status(StatusCodes.OK).json({
+      res.status(StatusCodes.BAD_REQUEST).json({
         success: true,
         userExist,
         uuid,
