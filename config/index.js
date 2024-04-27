@@ -1,3 +1,4 @@
 module.exports = {
-  DB: require('./mongoose'),
-}
+  ServerConfig: require("./serverConfig"),
+  DB: require("./mongoose"),
+};
