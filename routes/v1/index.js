@@ -1,7 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { InfoController, AddSpotController, AddUserController } = require("./../../controllers");
-
+const {
+  InfoController,
+  SpotController,
+  UserController,
+} = require("./../../controllers");
 
 const dummy = (req, res) => {
   res.json({
@@ -17,6 +20,7 @@ router.post("/add-spot/:uuid", SpotController.addByUser);
 
 router.post("/add-user", UserController.add);
 
-router.get("/get-spot", )
+router.get("/get-spot", SpotController.get);
+router.get("/get-spot/:spotId", SpotController.get);
 
 module.exports = router;

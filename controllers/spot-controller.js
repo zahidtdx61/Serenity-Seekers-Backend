@@ -45,7 +45,6 @@ const add = async (req, res) => {
 
 const addByUser = async (req, res) => {
   try {
-    console.log(req.params);
     const uuid = req.params.uuid;
     const {
       image,
@@ -74,8 +73,6 @@ const addByUser = async (req, res) => {
       travelTime,
       totalVisitorsPerYear,
     };
-
-    console.log(user);
 
     if (!user) {
       return res.status(StatusCodes.NOT_FOUND).json({
@@ -107,7 +104,53 @@ const addByUser = async (req, res) => {
   }
 };
 
+const get = async (req, res) => {
+  try {
+    const spots = await Spots.find();
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Spots retrieved successfully",
+      data: spots,
+    });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+const getSingleSpot = async (req, res) => {
+  try {
+    const spotId = req.params.spotId;
+    const spot = await Spots.findById(spotId);
+
+    if (!spot) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: "Spot not found",
+      });
+    }
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Spot retrieved successfully",
+      data: spot,
+    });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+
+}
+
 module.exports = {
   add,
   addByUser,
+  get,
 };
