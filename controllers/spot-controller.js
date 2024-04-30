@@ -66,7 +66,6 @@ const addByUser = async (req, res) => {
       seasonality,
       travelTime,
       totalVisitorsPerYear,
-      spotId,
       email,
       username,
     } = req.body;
